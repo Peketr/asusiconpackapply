@@ -1,5 +1,6 @@
 package com.huep.asusiconpackapplyer
 
+import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.ApplicationInfo
@@ -15,11 +16,12 @@ import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
 
-    fun getName(pack:ApplicationInfo): String {
+    private fun getName(pack:ApplicationInfo): String {
         return pack.loadLabel(packageManager) as String
     }
 
-    fun isIconPack(pack:ApplicationInfo):Boolean {
+    @SuppressLint("DiscouragedApi")
+    private fun isIconPack(pack:ApplicationInfo):Boolean {
         val res = packageManager.getResourcesForApplication(pack)
         val resourceId = res.getIdentifier("appfilter", "xml", pack.packageName)
         return resourceId !=0
@@ -36,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
         val listView = findViewById<ListView>(R.id.listview)
 
-        for (packageInfo in packages!!) {
+        for (packageInfo in packages) {
             if (isIconPack(packageInfo)){
                 packItems.add(packageInfo)
             }
@@ -47,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         listView.onItemClickListener = AdapterView.OnItemClickListener {
             _, _, position, _ ->
             selectedApp = packItems[position].packageName
-            Toast.makeText(applicationContext, "Selected " + getName(packItems[position]),Toast.LENGTH_LONG).show()
+            Toast.makeText(applicationContext, "Selected " + getName(packItems[position]),Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -60,11 +62,16 @@ class MainActivity : AppCompatActivity() {
                 asus.putExtra("com.asus.launcher.iconpack.PACKAGE_NAME", selectedApp)
                 asus.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 applicationContext.startActivity(asus)
+                Toast.makeText(baseContext,"Setting icon pack and exiting",Toast.LENGTH_LONG).show()
                 this.finish()
             } catch (e: Exception) {
                 //something went wrong
                 e.printStackTrace()
             }
         }
+    }
+
+    override fun onBackPressed() {
+        this.finish()
     }
 }
