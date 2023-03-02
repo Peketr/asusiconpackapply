@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -26,48 +25,30 @@ class MainActivity : AppCompatActivity() {
         return resourceId !=0
     }
 
-    //LIST OF ARRAY STRINGS WHICH WILL SERVE AS LIST ITEMS
-    var listItems = ArrayList<String>()
-    var packItems = ArrayList<ApplicationInfo>()
-
-    //DEFINING A STRING ADAPTER WHICH WILL HANDLE THE DATA OF THE LISTVIEW
-    var adapter: ArrayAdapter<String>? = null
-
-    var packages: MutableList<ApplicationInfo>? = null
-    var selectedApp = ""
+    private var packItems = ArrayList<ApplicationInfo>()
+    private var selectedApp = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        adapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_list_item_1,
-            listItems
-        )
-        packages = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
-        packages!!.sortBy { pack -> getName(pack) }
+        val packages = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
+        packages.sortBy { pack -> getName(pack) }
 
         val listView = findViewById<ListView>(R.id.listview)
-        listView.adapter = adapter
+
         for (packageInfo in packages!!) {
             if (isIconPack(packageInfo)){
-                listItems.add(getName(packageInfo))
                 packItems.add(packageInfo)
             }
         }
-        adapter!!.notifyDataSetChanged()
+        listView.adapter = IconPackListAdapter(this,packItems)
+        (listView.adapter as IconPackListAdapter).notifyDataSetChanged()
 
         listView.onItemClickListener = AdapterView.OnItemClickListener {
-                _, _, position, _ ->
-            if (packItems[position].packageName != null){
-                selectedApp = packItems[position].packageName
-                Toast.makeText(applicationContext, "Selected " + getName(packItems[position]),Toast.LENGTH_LONG).show()
-            } else {
-                Toast.makeText(applicationContext, "Something went wrong selecting package",Toast.LENGTH_LONG).show()
-            }
-
+            _, _, position, _ ->
+            selectedApp = packItems[position].packageName
+            Toast.makeText(applicationContext, "Selected " + getName(packItems[position]),Toast.LENGTH_LONG).show()
         }
-
     }
 
     fun applyIconPack(view: View) {
@@ -79,10 +60,10 @@ class MainActivity : AppCompatActivity() {
                 asus.putExtra("com.asus.launcher.iconpack.PACKAGE_NAME", selectedApp)
                 asus.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 applicationContext.startActivity(asus)
-            } catch (e: ActivityNotFoundException) {
+                this.finish()
+            } catch (e: Exception) {
                 //something went wrong
-            } catch (e: NullPointerException) {
-                //something went wrong but with extra steps
+                e.printStackTrace()
             }
         }
     }
