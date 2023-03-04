@@ -20,7 +20,10 @@ class IconPackListAdapter(private val context: Activity, private val _package: A
         val imageView = rowView.findViewById(R.id.icon) as ImageView
         val subtitleText = rowView.findViewById(R.id.description) as TextView
 
-        titleText.text = getName(_package[position])
+        if (_package[position].packageName == "com.asus.launcher")
+            titleText.text = "Default Icons"
+        else
+            titleText.text = getName(_package[position])
         val icon = _package[position].loadIcon(getContext().packageManager)
         imageView.setImageDrawable(icon)
         subtitleText.text = _package[position].packageName

@@ -1,14 +1,12 @@
 package com.huep.asusiconpackapplyer
 
 import android.annotation.SuppressLint
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -39,10 +37,18 @@ class MainActivity : AppCompatActivity() {
         val listView = findViewById<ListView>(R.id.listview)
 
         for (packageInfo in packages) {
-            if (isIconPack(packageInfo)){
+            if (isIconPack(packageInfo) || packageInfo.packageName.contains("com.asus.launcher")){
                 packItems.add(packageInfo)
             }
         }
+
+        if (packItems.size == 0){
+            var placeholder = ApplicationInfo()
+            placeholder.packageName="No Icon Packs installed"
+            packItems.add(placeholder)
+
+        }
+
         listView.adapter = IconPackListAdapter(this,packItems)
         (listView.adapter as IconPackListAdapter).notifyDataSetChanged()
 
