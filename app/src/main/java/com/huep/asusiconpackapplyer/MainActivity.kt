@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         val listView = findViewById<ListView>(R.id.listview)
 
         for (packageInfo in packages) {
-            if (isIconPack(packageInfo) || packageInfo.packageName.contains("com.asus.launcher")){
+            if (isIconPack(packageInfo) || packageInfo.packageName == "com.asus.launcher"){
                 packItems.add(packageInfo)
             }
         }
