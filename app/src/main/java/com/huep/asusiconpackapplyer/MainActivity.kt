@@ -31,13 +31,11 @@ class MainActivity : AppCompatActivity() {
     private var packItems = ArrayList<ApplicationInfo>()
     private var selectedApp = ""
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+    private fun updateList(listView:ListView){
         val packages = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
         packages.sortBy { pack -> getName(pack) }
 
-        val listView = findViewById<ListView>(R.id.listview)
+        packItems.clear()
 
         for (packageInfo in packages) {
             if (isIconPack(packageInfo) || packageInfo.packageName == "com.asus.launcher"){
@@ -53,7 +51,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         listView.adapter = IconPackListAdapter(this,packItems)
-        (listView.adapter as IconPackListAdapter).notifyDataSetChanged()
+        (listView.adapter as IconPackListAdapter).notifyDataSetChanged()    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        val listView = findViewById<ListView>(R.id.listview)
+
+        updateList(listView)
 
         listView.onItemClickListener = AdapterView.OnItemClickListener {
             _, _, position, _ ->
@@ -62,6 +68,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @Suppress("unused")
     fun applyIconPack(view: View) {
         if (selectedApp != ""){
             try {
@@ -78,6 +85,12 @@ class MainActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
         }
+    }
+
+    @Suppress("unused")
+    fun refreshList(view: View) {
+        val listView = findViewById<ListView>(R.id.listview)
+        updateList(listView)
     }
 
     override fun onBackPressed() {
@@ -98,4 +111,5 @@ class MainActivity : AppCompatActivity() {
         }
         return true
     }
+
 }
