@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.options,menu)
         val versionName = BuildConfig.VERSION_NAME
-        menu?.add("v$versionName")
+        menu?.add("v$versionName${if(BuildConfig.DEBUG){" (Debug)"}else{""}}")
         return true
     }
 
