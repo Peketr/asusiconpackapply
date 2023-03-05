@@ -108,6 +108,9 @@ class MainActivity : AppCompatActivity() {
         if  (item.itemId == R.id.github_menu_item){
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Peketr/asusiconpackapply"))
             startActivity(browserIntent)
+        } else if (item.itemId == R.id.refresh_menu_item){
+            val listView = findViewById<ListView>(R.id.listview)
+            updateList(listView)
         }
         return true
     }

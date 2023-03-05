@@ -2,6 +2,13 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <item android:title="Refresh"
+        android:id="@+id/refresh_menu_item"
+        android:icon="@drawable/refresh"
+        
+        app:showAsAction="always" />
+
     <item android:title="Github (updates)"
         android:id="@+id/github_menu_item"/>
+
 </menu>
