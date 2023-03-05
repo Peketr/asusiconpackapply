@@ -4,7 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ListView
@@ -79,5 +82,20 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         this.finish()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.options,menu)
+        val versionName = BuildConfig.VERSION_NAME
+        menu?.add("v$versionName")
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if  (item.itemId == R.id.github_menu_item){
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Peketr/asusiconpackapply"))
+            startActivity(browserIntent)
+        }
+        return true
     }
 }
